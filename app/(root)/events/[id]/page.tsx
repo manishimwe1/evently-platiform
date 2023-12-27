@@ -1,4 +1,5 @@
 import { getEventById } from "@/lib/actions/event.actions";
+import { formatDateTime } from "@/lib/utils";
 import { SearchParamProps } from "@/type";
 import Image from "next/image";
 import React from "react";
@@ -49,6 +50,49 @@ const EventDetails = async ({
 									}
 								</span>
 							</p>
+						</div>
+					</div>
+
+					{/* TODO: CHECKOUT BTN*/}
+					<div className='flex flex-col gap-5'>
+						<div className='flex gap-2 md:gap-3'>
+							<Image
+								src={
+									"/assets/icons/calendar.svg"
+								}
+								alt='calenda'
+								width={32}
+								height={32}
+							/>
+							<div className='p-medium-16 lg:p-regular-20 flex flex-wrap items-center flex-col'>
+								<p>
+									Start:{" "}
+									{
+										formatDateTime(
+											event.startDateTime,
+										).dateOnly
+									}{" "}
+									{
+										formatDateTime(
+											event.startDateTime,
+										).timeOnly
+									}
+								</p>
+
+								<p className=''>
+									End:{" "}
+									{
+										formatDateTime(
+											event.endDateTime,
+										).dateOnly
+									}
+									{
+										formatDateTime(
+											event.endDateTime,
+										).timeOnly
+									}
+								</p>
+							</div>
 						</div>
 					</div>
 				</div>
