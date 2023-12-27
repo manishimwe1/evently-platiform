@@ -44,7 +44,7 @@ const Dropdown = ({
 	const [newcategory, setNewCategory] = useState("");
 
 	const handleAddCategory = () => {
-		console.log("adding category...");
+		// console.log("adding category...");
 
 		createCategory({
 			categoryName: newcategory.trim(),
