@@ -66,7 +66,6 @@ const EventDetails = async ({
 							/>
 							<div className='p-medium-16 lg:p-regular-20 flex flex-wrap items-center flex-col'>
 								<p>
-									Start:{" "}
 									{
 										formatDateTime(
 											event.startDateTime,
@@ -80,7 +79,6 @@ const EventDetails = async ({
 								</p>
 
 								<p className=''>
-									End:{" "}
 									{
 										formatDateTime(
 											event.endDateTime,
@@ -94,6 +92,28 @@ const EventDetails = async ({
 								</p>
 							</div>
 						</div>
+						<div className='p-regular-20 flex items-center gap-3'>
+							<Image
+								src='/assets/icons/location.svg'
+								alt='locotion'
+								width={32}
+								height={32}
+							/>
+							<p className='p-medium-16 lg:p-regular-20'>
+								{event.location}
+							</p>
+						</div>
+					</div>
+					<div className='flex flex-col gap-2'>
+						<p className='p-bold-20 text-slate-600'>
+							What You'll Learn
+						</p>
+						<p className='p-medium-16 lg:p-regular-18'>
+							{event.description}
+						</p>
+						<p className='p-medium-16 cursor-pointer text-primary-500 underline truncate lg:p-regular-18'>
+							{event.url}
+						</p>
 					</div>
 				</div>
 			</div>

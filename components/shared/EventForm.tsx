@@ -25,18 +25,41 @@ import { useUploadThing } from "@/lib/uploadthing";
 import "react-datepicker/dist/react-datepicker.css";
 import { handleError } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { createEvent } from "@/lib/actions/event.actions";
+import {
+	createEvent,
+	updateEvent,
+} from "@/lib/actions/event.actions";
+import { IEvent } from "@/lib/database/models/event.model";
 
 type Props = {
 	userId: string;
 	type: "Create" | "Update";
+	event?: IEvent;
+	eventId?: string;
 };
 
-export const EventForm = ({ userId, type }: Props) => {
+export const EventForm = ({
+	userId,
+	type,
+	event,
+	eventId,
+}: Props) => {
 	const router = useRouter();
 	const [files, setFiles] = useState<File[]>([]);
-	const initialValues = eventDefaultValues;
+	const initialValues =
+		event && type === "Update"
+			? {
+					...event,
+					startDateTime: new Date(
+						event.startDateTime,
+					),
+					endDateTime: new Date(
+						event.endDateTime,
+					),
+			  }
+			: eventDefaultValues;
 	const { startUpload } = useUploadThing("imageUploader");
+
 	const form = useForm<z.infer<typeof eventFormSchema>>({
 		resolver: zodResolver(eventFormSchema),
 		defaultValues: initialValues,
@@ -74,6 +97,34 @@ export const EventForm = ({ userId, type }: Props) => {
 				handleError(error);
 			}
 		}
+		if (type === "Update") {
+			if (!eventId) {
+				router.back();
+				return;
+			}
+			try {
+				const updatedEvent = await updateEvent({
+					event: {
+						...values,
+						imageUrl: uploadedImageUrl,
+						_id: eventId,
+					},
+					userId,
+					path: `/events/${eventId}`,
+				});
+				if (updatedEvent) {
+					form.reset();
+					router.push(
+						`/events/${updatedEvent._id}`,
+					);
+				}
+			} catch (error) {
+				console.log(error);
+
+				handleError(error);
+			}
+		}
+
 		// console.log(values);
 	}
 	return (
@@ -357,7 +408,9 @@ export const EventForm = ({ userId, type }: Props) => {
 					disabled={form.formState.isSubmitting}
 					className='button col-span-2 w-full'>
 					{form.formState.isSubmitting
-						? "Submitting..."
+						? type === "Update"
+							? "Updating.."
+							: "Submitting..."
 						: `${type} Event`}
 				</Button>
 			</form>
