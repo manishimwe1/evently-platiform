@@ -55,7 +55,7 @@ const Card = ({
 								? "FREE"
 								: `${event.price}`}
 						</span>
-						<p className='p-semibold-14 w-min rounded-full bg-grey-500/10 px-4 py-1 text-gray-500'>
+						<p className='p-semibold-14 w-min rounded-full line-clamp-1 bg-grey-500/10 px-4 py-1 text-gray-500'>
 							{event.category.name}
 						</p>
 					</div>
