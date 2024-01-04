@@ -1,3 +1,5 @@
+"use client";
+
 import { IEvent } from "@/lib/database/models/event.model";
 import React, { useEffect } from "react";
 import { Button } from "../ui/button";
@@ -44,7 +46,7 @@ const CheckOut = ({
 		await checkoutOrder(order);
 	};
 	return (
-		<form action={onCheckout} method='post'>
+		<form action={onCheckout}>
 			<Button
 				type='submit'
 				role='link'

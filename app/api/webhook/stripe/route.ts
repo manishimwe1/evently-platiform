@@ -4,12 +4,16 @@ import { createOrder } from "@/lib/actions/order.actions";
 
 export async function POST(request: Request) {
 	const body = await request.text();
+	console.log("BODY:", body);
 
 	const sig = request.headers.get(
 		"stripe-signature",
 	) as string;
+	console.log("SIG", sig);
+
 	const endpointSecret =
 		process.env.STRIPE_WEBHOOK_SECRET!;
+	console.log("ENDPOINTSECRET:", endpointSecret);
 
 	let event;
 
@@ -21,7 +25,8 @@ export async function POST(request: Request) {
 		);
 	} catch (err) {
 		return NextResponse.json({
-			message: "Webhook error",
+			message: "Webhook error look in body",
+			body: body,
 			error: err,
 		});
 	}
