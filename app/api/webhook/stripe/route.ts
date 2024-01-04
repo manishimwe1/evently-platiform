@@ -1,29 +1,43 @@
 import stripe from "stripe";
 import { NextResponse } from "next/server";
 import { createOrder } from "@/lib/actions/order.actions";
+import { NextApiRequest, NextApiResponse } from "next";
+import { buffer } from "stream/consumers";
 
-export async function POST(request: Request) {
+export async function POST(
+	request: Request,
+	req: NextApiRequest,
+	res: NextApiResponse,
+) {
+	const buf = await buffer(req);
+
 	const body = await request.text();
+	console.log("BODY:", body);
 
 	const sig = request.headers.get(
 		"stripe-signature",
 	) as string;
+	console.log("SIG", sig);
+
 	const endpointSecret =
 		process.env.STRIPE_WEBHOOK_SECRET!;
+	console.log("ENDPOINTSECRET:", endpointSecret);
 
 	let event;
 
 	try {
 		event = stripe.webhooks.constructEvent(
-			body,
+			buf.toString(),
 			sig,
 			endpointSecret,
 		);
-	} catch (err) {
-		return NextResponse.json({
-			message: "Webhook error",
-			error: err,
-		});
+	} catch (err: any) {
+		// On error, log and return the error message
+		console.log(`❌ Error message: ${err.message}`);
+		res.status(400).send(
+			`Webhook Error: ${err.message}`,
+		);
+		return;
 	}
 
 	// Get the ID and type
