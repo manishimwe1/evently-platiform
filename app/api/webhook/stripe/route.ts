@@ -1,16 +1,8 @@
 import stripe from "stripe";
 import { NextResponse } from "next/server";
 import { createOrder } from "@/lib/actions/order.actions";
-import { NextApiRequest, NextApiResponse } from "next";
-import { buffer } from "stream/consumers";
 
-export async function POST(
-	request: Request,
-	req: NextApiRequest,
-	res: NextApiResponse,
-) {
-	const buf = await buffer(req);
-
+export async function POST(request: Request) {
 	const body = await request.text();
 	console.log("BODY:", body);
 
@@ -27,27 +19,20 @@ export async function POST(
 
 	try {
 		event = stripe.webhooks.constructEvent(
-			buf.toString(),
+			body,
 			sig,
 			endpointSecret,
 		);
-	} catch (err: any) {
-		// On error, log and return the error message
-		console.log(`❌ Error message: ${err.message}`);
-		res.status(400).send(
-			`Webhook Error: ${err.message}`,
-		);
+	} catch (err) {
+		return NextResponse.json({
+			message: "Webhook error look in",
+			body: body,
+			error: err,
+		});
 	}
-	// } catch (err) {
-	// 	return NextResponse.json({
-	// 		message: "Webhook error look in body",
-	// 		body: body,
-	// 		error: err,
-	// 	});
-	// }
 
 	// Get the ID and type
-	const eventType = event?.type;
+	const eventType = event.type;
 
 	// CREATE
 	if (eventType === "checkout.session.completed") {
