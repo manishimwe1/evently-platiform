@@ -37,11 +37,17 @@ export async function POST(
 		res.status(400).send(
 			`Webhook Error: ${err.message}`,
 		);
-		return;
 	}
+	// } catch (err) {
+	// 	return NextResponse.json({
+	// 		message: "Webhook error look in body",
+	// 		body: body,
+	// 		error: err,
+	// 	});
+	// }
 
 	// Get the ID and type
-	const eventType = event.type;
+	const eventType = event?.type;
 
 	// CREATE
 	if (eventType === "checkout.session.completed") {
